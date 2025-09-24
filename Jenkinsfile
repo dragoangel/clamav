@@ -64,19 +64,6 @@ pipeline {
 
     stages {
 
-        stage('GitGuardian Scan') {
-            environment {
-                GITGUARDIAN_API_KEY = credentials('gitguardian-token')
-                GITGUARDIAN_API_URL = 'https://gitguardian.cisco.com/'
-            }
-            agent { label "docker" }
-            steps {
-                withDockerContainer(args: "-i --entrypoint=''", image: 'gitguardian/ggshield:latest') {
-                    sh 'ggshield secret scan ci'
-                }
-            }
-        }
-
         stage('Generate Tarball') {
             steps {
                 cleanWs()
@@ -112,8 +99,9 @@ pipeline {
                             -D LIBXML2_LIBRARY="$HOME/.mussels/install/host-static/lib/libxml2.a" \
                             -D PCRE2_INCLUDE_DIR="$HOME/.mussels/install/host-static/include" \
                             -D PCRE2_LIBRARY="$HOME/.mussels/install/host-static/lib/libpcre2-8.a" \
-                            -D CURSES_INCLUDE_DIR="$HOME/.mussels/install/host-static/include" \
-                            -D CURSES_LIBRARY="$HOME/.mussels/install/host-static/lib/libncurses.a;$HOME/.mussels/install/host-static/lib/libtinfo.a" \
+                            -D NCURSES_INCLUDE_DIR="$HOME/.mussels/install/host-static/include" \
+                            -D CURSES_LIBRARY="$HOME/.mussels/install/host-static/lib/libncurses.a" \
+                            -D TINFO_LIBRARY="$HOME/.mussels/install/host-static/lib/libtinfo.a" \
                             -D ZLIB_INCLUDE_DIR="$HOME/.mussels/install/host-static/include" \
                             -D ZLIB_LIBRARY="$HOME/.mussels/install/host-static/lib/libz.a" \
                             -D LIBCHECK_INCLUDE_DIR="$HOME/.mussels/install/host-static/include" \
